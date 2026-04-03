@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { pool, initDB } from "./db.js";
 import authRoutes from "./routes/auth.js";
 import reportRoutes from "./routes/reports.js";
+import adminRoutes from "./routes/admin.js";
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.get("/db-test", async (req, res, next) => {
 // Feature Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/admin", adminRoutes);
 
 // 404 Handler
 app.use((req, res) => {
