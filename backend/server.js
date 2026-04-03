@@ -1,3 +1,7 @@
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
@@ -77,6 +81,6 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
   await initDB();
 });
