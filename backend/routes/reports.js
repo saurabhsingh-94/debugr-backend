@@ -22,7 +22,11 @@ router.post("/", authMiddleware, upload.single("evidence"), async (req, res, nex
       try {
         evidence_url = await uploadToCloudinary(req.file.buffer);
       } catch (uploadErr) {
-        return res.status(500).json({ error: "Failed to upload evidence to cloud" });
+        console.error("Cloudinary Upload Error:", uploadErr);
+        return res.status(500).json({ 
+          error: "Failed to upload evidence to cloud", 
+          details: uploadErr.message 
+        });
       }
     }
 
