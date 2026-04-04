@@ -13,7 +13,8 @@ export default function SignUp() {
   const [role, setRole] = useState<Role>(null);
   const [formData, setFormData] = useState({ 
     email: '', password: '', confirmPassword: '',
-    name: '', handle: '', specialization: 'Web', industry: '', experience_level: 'Intermediate'
+    name: '', handle: '', specialization: 'Web', industry: '', experience_level: 'Intermediate',
+    bio: '', website: '', location: '', github_url: '', skills: [] as string[], company_size: '1-10', description: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -100,8 +101,8 @@ export default function SignUp() {
           </div>
         </section>
 
-        <section style={{ padding: '0 10%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} style={{ width: '100%', maxWidth: 440 }}>
+        <section style={{ padding: '0 5%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} style={{ width: '100%', maxWidth: step === 3 ? 640 : 440 }}>
             
             {step === 1 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
@@ -140,18 +141,24 @@ export default function SignUp() {
             )}
 
             {step === 3 && (
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 32, width: '100%', maxWidth: 640 }}>
                 <div>
-                  <button onClick={prevStep} style={{ background: 'none', border: 'none', color: 'var(--t3)', cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>← SECURITY</button>
-                  <h2 style={{ fontSize: 24, fontWeight: 800, marginTop: 12 }}>{role === 'hacker' ? 'Hacker Stats' : 'Organization Intel'}</h2>
+                  <button type="button" onClick={prevStep} style={{ background: 'none', border: 'none', color: 'var(--t3)', cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>← SECURITY</button>
+                  <h2 style={{ fontSize: 24, fontWeight: 800, marginTop: 12 }}>Initialize Profile.</h2>
+                  <p style={{ color: 'var(--t3)', fontSize: 14 }}>Complete your {role} identity fragments.</p>
                 </div>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
                   {role === 'hacker' ? (
                     <>
-                      <Input label="Handle" value={formData.handle} onChange={v => setFormData({...formData, handle: v})} placeholder="@shadow_walker" />
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--t3)', textTransform: 'uppercase' }}>Specialization</label>
+                      <div style={{ gridColumn: 'span 2' }}>
+                        <Input label="Handle" value={formData.handle} onChange={v => setFormData({...formData, handle: v})} placeholder="@shadow_walker" />
+                      </div>
+                      <Input label="Location" value={formData.location} onChange={v => setFormData({...formData, location: v})} placeholder="Berlin, Germany" />
+                      <Input label="GitHub / Portfolio" value={formData.github_url} onChange={v => setFormData({...formData, github_url: v})} placeholder="https://github.com/..." />
+                      
+                      <div style={{ gridColumn: 'span 1' }}>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--t3)', textTransform: 'uppercase', marginBottom: 8, display: 'block' }}>Specialization</label>
                         <select 
                           value={formData.specialization} 
                           onChange={e => setFormData({...formData, specialization: e.target.value})}
@@ -163,18 +170,99 @@ export default function SignUp() {
                           <option>Crypto/Web3</option>
                         </select>
                       </div>
+                      <div style={{ gridColumn: 'span 1' }}>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--t3)', textTransform: 'uppercase', marginBottom: 8, display: 'block' }}>Experience</label>
+                        <select 
+                          value={formData.experience_level} 
+                          onChange={e => setFormData({...formData, experience_level: e.target.value})}
+                          style={{ width: '100%', padding: '16px 20px', borderRadius: 12, background: '#111', border: '1px solid var(--line)', color: '#fff' }}
+                        >
+                          <option>Entry Level</option>
+                          <option>Intermediate</option>
+                          <option>Advanced</option>
+                          <option>Elite / L33t</option>
+                        </select>
+                      </div>
+
+                      <div style={{ gridColumn: 'span 2' }}>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--t3)', textTransform: 'uppercase', marginBottom: 8, display: 'block' }}>Public Bio</label>
+                        <textarea 
+                          value={formData.bio}
+                          onChange={e => setFormData({...formData, bio: e.target.value})}
+                          placeholder="Tell the community about your methodology..."
+                          style={{ width: '100%', minHeight: 100, padding: '16px 20px', borderRadius: 12, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--line)', color: '#fff', resize: 'vertical' }}
+                        />
+                      </div>
+
+                      <div style={{ gridColumn: 'span 2' }}>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--t3)', textTransform: 'uppercase', marginBottom: 12, display: 'block' }}>Core Skills</label>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                          {['XSS', 'SQLi', 'RCE', 'SSR_F', 'Auth Bypass', 'API Security', 'Business Logic'].map(skill => (
+                            <button 
+                              key={skill}
+                              type="button"
+                              onClick={() => {
+                                const newSkills = formData.skills.includes(skill) 
+                                  ? formData.skills.filter(s => s !== skill)
+                                  : [...formData.skills, skill];
+                                setFormData({...formData, skills: newSkills});
+                              }}
+                              style={{
+                                padding: '8px 16px', borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: 'pointer',
+                                background: formData.skills.includes(skill) ? '#fff' : 'rgba(255,255,255,0.03)',
+                                border: `1px solid ${formData.skills.includes(skill) ? '#fff' : 'var(--line)'}`,
+                                color: formData.skills.includes(skill) ? '#000' : 'var(--t2)',
+                                transition: 'all 0.2s'
+                              }}
+                            >
+                              {skill}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </>
                   ) : (
                     <>
-                      <Input label="Company Name" value={formData.name} onChange={v => setFormData({...formData, name: v})} placeholder="Cyberdyne Systems" />
-                      <Input label="Industry" value={formData.industry} onChange={v => setFormData({...formData, industry: v})} placeholder="Technology" />
+                      <div style={{ gridColumn: 'span 2' }}>
+                        <Input label="Company Name" value={formData.name} onChange={v => setFormData({...formData, name: v})} placeholder="Cyberdyne Systems" />
+                      </div>
+                      <Input label="Official Website" value={formData.website} onChange={v => setFormData({...formData, website: v})} placeholder="https://example.com" />
+                      <div style={{ gridColumn: 'span 1' }}>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--t3)', textTransform: 'uppercase', marginBottom: 8, display: 'block' }}>Industry</label>
+                        <Input label="" value={formData.industry} onChange={v => setFormData({...formData, industry: v})} placeholder="Technology / SaaS" />
+                      </div>
+                      
+                      <div style={{ gridColumn: 'span 2' }}>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--t3)', textTransform: 'uppercase', marginBottom: 8, display: 'block' }}>Team Size</label>
+                        <select 
+                          value={formData.company_size} 
+                          onChange={e => setFormData({...formData, company_size: e.target.value})}
+                          style={{ width: '100%', padding: '16px 20px', borderRadius: 12, background: '#111', border: '1px solid var(--line)', color: '#fff' }}
+                        >
+                          <option>1-10 Employees</option>
+                          <option>11-50 Employees</option>
+                          <option>51-200 Employees</option>
+                          <option>201-500 Employees</option>
+                          <option>500+ Employees</option>
+                        </select>
+                      </div>
+
+                      <div style={{ gridColumn: 'span 2' }}>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--t3)', textTransform: 'uppercase', marginBottom: 8, display: 'block' }}>Corporate Description</label>
+                        <textarea 
+                          value={formData.description}
+                          onChange={e => setFormData({...formData, description: e.target.value})}
+                          placeholder="Describe your security mission and what you look for in a program..."
+                          style={{ width: '100%', minHeight: 120, padding: '16px 20px', borderRadius: 12, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--line)', color: '#fff', resize: 'vertical' }}
+                        />
+                      </div>
                     </>
                   )}
                 </div>
 
                 {error && <p className="error-msg">{error}</p>}
                 <button type="submit" disabled={loading} className="metallic-button" style={{ width: '100%', padding: '18px' }}>
-                  {loading ? 'Committing...' : 'Finalize Initialization'}
+                  {loading ? 'Committing...' : 'Finalize Profile'}
                 </button>
               </form>
             )}

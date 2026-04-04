@@ -23,6 +23,13 @@ const registerValidation = [
   body("specialization").optional().trim().isLength({ max: 100 }),
   body("industry").optional().trim().isLength({ max: 100 }),
   body("experience_level").optional().trim().isLength({ max: 50 }),
+  body("bio").optional().trim().isLength({ max: 1000 }),
+  body("website").optional().trim().isURL().withMessage("Must be a valid URL"),
+  body("location").optional().trim().isLength({ max: 100 }),
+  body("github_url").optional().trim().isURL().withMessage("Must be a valid GitHub URL"),
+  body("skills").optional().isArray(),
+  body("company_size").optional().trim().isLength({ max: 50 }),
+  body("description").optional().trim().isLength({ max: 2000 }),
   validate
 ];
 
@@ -49,12 +56,22 @@ router.post("/register", registerValidation, async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Insert user with profile fields
-    const { name, handle, specialization, industry, experience_level } = req.body;
+    const { 
+      name, handle, specialization, industry, experience_level,
+      bio, website, location, github_url, skills, company_size, description
+    } = req.body;
+    
     const newUser = await pool.query(
-      `INSERT INTO users (email, password, role, name, handle, specialization, industry, experience_level) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
+      `INSERT INTO users (
+        email, password, role, name, handle, specialization, industry, experience_level,
+        bio, website, location, github_url, skills, company_size, description
+      ) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) 
        RETURNING id, email, role, handle, created_at`,
-      [email, hashedPassword, role, name, handle, specialization, industry, experience_level]
+      [
+        email, hashedPassword, role, name, handle, specialization, industry, experience_level,
+        bio, website, location, github_url, JSON.stringify(skills || []), company_size, description
+      ]
     );
 
     res.status(201).json({

@@ -6,13 +6,18 @@ CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) DEFAULT 'hacker',
-    -- Unified profile fields
-    name VARCHAR(255), -- Legal Name or Organization Name
-    handle VARCHAR(100) UNIQUE, -- @handle for hackers
-    specialization VARCHAR(100), -- Primary field (Web, Pwn, etc.)
-    industry VARCHAR(100), -- For companies
-    experience_level VARCHAR(50), -- For hackers (Beginner, Pro, etc.)
+    role VARCHAR(20) NOT NULL CHECK (role IN ('hacker', 'company', 'admin')),
+    handle VARCHAR(50) UNIQUE,
+    name VARCHAR(100),
+    industry VARCHAR(100),
+    experience_level VARCHAR(50),
+    bio TEXT,
+    website VARCHAR(255),
+    location VARCHAR(100),
+    github_url VARCHAR(255),
+    skills JSONB DEFAULT '[]',
+    company_size VARCHAR(50),
+    description TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
