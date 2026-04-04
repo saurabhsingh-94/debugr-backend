@@ -2,8 +2,6 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
-const links = ['Programs', 'Leaderboard', 'Blog', 'Docs'];
-
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
@@ -23,45 +21,49 @@ export default function Navbar() {
       transition: 'background 0.25s, border-color 0.25s',
     }}>
       <div style={{
-        maxWidth: 1200, margin: '0 auto', height: '100%',
-        padding: '0 24px', display: 'flex', alignItems: 'center', gap: 0,
+        width: '100%', height: '100%',
+        padding: '0 5%', display: 'flex', alignItems: 'center', gap: 0,
       }}>
         {/* Logo */}
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginRight: 'auto' }}>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <rect x="1" y="1" width="18" height="18" rx="4" stroke="#e5334b" strokeWidth="1.5"/>
-            <path d="M6 10h8M10 6v8" stroke="#e5334b" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
-          <span style={{ fontWeight: 700, fontSize: 15, letterSpacing: '-0.02em', color: '#f0f0f0' }}>Debugr</span>
+          <div style={{ width: 32, height: 32, background: 'linear-gradient(135deg, #f5f5f7 0%, #a1a1a6 100%)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ color: '#111', fontWeight: 900, fontSize: 18 }}>D</span>
+          </div>
+          <span className="metallic-text" style={{ fontSize: 20, fontWeight: 850, letterSpacing: '-0.03em' }}>
+            Debugr
+          </span>
         </Link>
 
-        {/* Nav */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
-          {links.map(l => (
-            <Link key={l} href="#" style={{
-              fontSize: 13.5, color: '#888', textDecoration: 'none', fontWeight: 400,
-              transition: 'color 0.15s',
-            }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#f0f0f0')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#888')}
-            >{l}</Link>
+        {/* Links */}
+        <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
+          {['Directory', 'Leaderboard', 'Docs', 'Triage'].map((item) => (
+            <Link 
+              key={item} 
+              href={`/${item.toLowerCase()}`} 
+              style={{ fontSize: 13, fontWeight: 500, color: '#a1a1a6', textDecoration: 'none', transition: 'color 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#f5f5f7')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#a1a1a6')}
+            >
+              {item}
+            </Link>
           ))}
-        </nav>
+          
+          <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.1)', marginLeft: 8, marginRight: 8 }} />
+          
+          <Link href="/login" style={{ fontSize: 13, fontWeight: 500, color: '#f5f5f7', textDecoration: 'none' }}>
+            Sign in
+          </Link>
 
-        {/* Auth */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 32 }}>
-          <Link href="/login" style={{ fontSize: 13.5, color: '#888', textDecoration: 'none', fontWeight: 400 }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#f0f0f0')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#888')}
-          >Log in</Link>
-          <Link href="/dashboard" style={{
-            fontSize: 13, fontWeight: 500, color: '#111', background: '#f0f0f0',
-            padding: '6px 16px', borderRadius: 6, textDecoration: 'none',
-            transition: 'background 0.15s',
+          <Link href="/signup" style={{
+            fontSize: 13, fontWeight: 700, color: '#111', background: '#f5f5f7',
+            padding: '10px 24px', borderRadius: 8, textDecoration: 'none',
+            transition: 'all 0.2s', boxShadow: '0 5px 15px rgba(255,255,255,0.1)'
           }}
-            onMouseEnter={e => (e.currentTarget.style.background = '#fff')}
-            onMouseLeave={e => (e.currentTarget.style.background = '#f0f0f0')}
-          >Get started</Link>
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.background = '#fff'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = '#f5f5f7'; }}
+          >
+            Get started
+          </Link>
         </div>
       </div>
     </header>

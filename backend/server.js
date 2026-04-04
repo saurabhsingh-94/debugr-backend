@@ -11,6 +11,7 @@ import reportRoutes from "./routes/reports.js";
 import adminRoutes from "./routes/admin.js";
 import commentRoutes from "./routes/comments.js";
 import userRoutes from "./routes/users.js";
+import programRoutes from "./routes/programs.js";
 import logger from "./utils/logger.js";
 import ApiError from "./utils/ApiError.js";
 
@@ -80,11 +81,13 @@ app.get("/db-test", async (req, res, next) => {
 });
 
 // Feature Routes
+console.log('Registering Routes...');
 app.use("/api/auth", authRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/programs", programRoutes);
 
 // 404 Handler
 app.use((req, res, next) => {

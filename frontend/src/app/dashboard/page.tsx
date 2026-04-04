@@ -102,7 +102,7 @@ export default function Dashboard() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 32 }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-                <p style={{ fontFamily: 'DM Mono', fontSize: 11, color: '#e5334b', letterSpacing: '0.05em' }}>Hunter Dashboard</p>
+                <p style={{ fontFamily: 'DM Mono', fontSize: 11, color: '#e5334b', letterSpacing: '0.05em' }}>Hacker Dashboard</p>
                 {isLive && (
                   <span style={{ fontSize: 10, background: 'rgba(76,175,80,0.1)', color: '#4caf50', padding: '2px 8px', borderRadius: 100, border: '1px solid rgba(76,175,80,0.2)' }}>Live Data</span>
                 )}

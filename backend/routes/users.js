@@ -46,14 +46,15 @@ router.get("/profile/me", authMiddleware, cache(30), async (req, res, next) => {
   }
 });
 
-// Get global leaderboard (Top researchers by bounty earned)
-// Uses Redis Sorted Set for O(log N) ranking
+// Get global leaderboard (Top hackers by bounty earned or resolved count)
+// Uses Redis Sorted Set for O(log N) ranking for the default view
 router.get("/leaderboard", cache(60), async (req, res, next) => {
-  const REDIS_KEY = "leaderboard:global";
+  const { sortBy = 'earned' } = req.query;
+  const REDIS_KEY = `leaderboard:global:${sortBy}`;
   
   try {
-    // 1. Try to get from Redis
-    if (redis) {
+    // 1. Try to get from Redis (Only for verified top 10)
+    if (redis && sortBy === 'earned') { // Currently only caching 'earned' in Redis for simplicity
       const redisLeaderboard = await redis.zrevrange(REDIS_KEY, 0, 9, "WITHSCORES");
       if (redisLeaderboard.length > 0) {
         const formatted = [];
@@ -70,22 +71,25 @@ router.get("/leaderboard", cache(60), async (req, res, next) => {
       }
     }
 
-    // 2. Fallback to SQL if Redis is empty or down
+    // 2. Fallback to SQL (or primary choice for 'resolved')
+    const orderField = sortBy === 'resolved' ? 'resolved_count' : 'total_earned';
     const query = `
-      SELECT u.id, u.email, COALESCE(SUM(r.bounty), 0) as total_earned, COUNT(r.id) as resolved_count
+      SELECT u.id, u.email, 
+             COALESCE(SUM(r.bounty), 0) as total_earned, 
+             COUNT(r.id) FILTER (WHERE r.status = 'resolved') as resolved_count
       FROM users u
-      LEFT JOIN reports r ON u.id = r.user_id AND r.status = 'resolved'
-      WHERE u.role = 'researcher'
+      LEFT JOIN reports r ON u.id = r.user_id
+      WHERE u.role = 'hacker'
       GROUP BY u.id, u.email
-      HAVING SUM(r.bounty) > 0
-      ORDER BY total_earned DESC
+      HAVING COUNT(r.id) FILTER (WHERE r.status = 'resolved') > 0
+      ORDER BY ${orderField} DESC
       LIMIT 10
     `;
 
     const result = await pool.query(query);
     
-    // 3. Proactively seed Redis if it was empty
-    if (redis && result.rows.length > 0) {
+    // 3. Proactively seed Redis if it was empty (Only for 'earned' for now)
+    if (redis && sortBy === 'earned' && result.rows.length > 0) {
       const pipeline = redis.pipeline();
       result.rows.forEach(row => {
         pipeline.zadd(REDIS_KEY, row.total_earned, `${row.id}:${row.email}`);

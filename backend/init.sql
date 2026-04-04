@@ -59,3 +59,25 @@ CREATE TABLE IF NOT EXISTS activity_log (
     details JSONB DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Create Programs table (Directory)
+CREATE TABLE IF NOT EXISTS programs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    type VARCHAR(50) DEFAULT 'public' CHECK (type IN ('public', 'private')),
+    logo_url VARCHAR(255),
+    reward_min DECIMAL(10, 2) DEFAULT 0.00,
+    reward_max DECIMAL(10, 2) DEFAULT 0.00,
+    scope JSONB DEFAULT '[]',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert some initial seed programs
+INSERT INTO programs (name, description, type, reward_min, reward_max, scope)
+VALUES 
+('FinTech Corp', 'Secure the next generation of digital payments.', 'private', 500, 15000, '["Web", "Mobile", "API"]'),
+('CloudNative Inc', 'Enterprise-grade cloud infrastructure security.', 'private', 1000, 25000, '["Infrastructure", "API"]'),
+('ShopPlatform', 'Protecting millions of global transactions daily.', 'public', 100, 8000, '["Web", "Mobile"]'),
+('DataSafe Ltd', 'Zero-trust data storage for heavily regulated industries.', 'private', 250, 12000, '["API", "Cloud"]')
+ON CONFLICT DO NOTHING;
