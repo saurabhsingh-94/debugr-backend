@@ -3,20 +3,9 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
+import { fadeInUp, inView, viewportConfig } from '@/lib/animations';
 
-/* ─── Types ─────────── */
-const fade = (delay = 0) => ({
-  initial: { opacity: 0, y: 14 },
-  animate: { opacity: 1, y: 0 },
-  transition: { delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-});
 
-const inView = (delay = 0) => ({
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-60px' },
-  transition: { delay, duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-});
 
 /* ─── Data ─────────── */
 const numbers = [
@@ -77,33 +66,53 @@ export default function Home() {
         maxWidth: 1200, margin: '0 auto', padding: '160px 24px 120px',
       }}>
         {/* Label */}
-        <motion.p {...fade(0.1)} style={{ fontFamily: 'DM Mono', fontSize: 12, color: '#e5334b', letterSpacing: '0.05em', marginBottom: 28 }}>
+        <motion.p 
+          variants={fadeInUp(0.1)} 
+          initial="hidden" 
+          animate="visible" 
+          style={{ fontFamily: 'DM Mono', fontSize: 12, color: '#e5334b', letterSpacing: '0.05em', marginBottom: 28 }}
+        >
           Bug Bounty Platform
         </motion.p>
 
         {/* Headline */}
-        <motion.h1 {...fade(0.2)} style={{
-          fontWeight: 800, fontSize: 'clamp(44px, 6vw, 80px)',
-          lineHeight: 1.05, letterSpacing: '-0.04em',
-          color: '#f0f0f0', maxWidth: 800, marginBottom: 28,
-        }}>
+        <motion.h1 
+          variants={fadeInUp(0.2)} 
+          initial="hidden" 
+          animate="visible" 
+          style={{
+            fontWeight: 800, fontSize: 'clamp(44px, 6vw, 80px)',
+            lineHeight: 1.05, letterSpacing: '-0.04em',
+            color: '#f0f0f0', maxWidth: 800, marginBottom: 28,
+          }}
+        >
           Find vulnerabilities.<br />
           Get paid fairly.<br />
           <span style={{ color: '#444' }}>No games.</span>
         </motion.h1>
 
         {/* Subheading */}
-        <motion.p {...fade(0.3)} style={{
-          fontSize: 18, color: '#888', lineHeight: 1.65,
-          maxWidth: 480, marginBottom: 44, fontWeight: 400,
-        }}>
+        <motion.p 
+          variants={fadeInUp(0.3)} 
+          initial="hidden" 
+          animate="visible" 
+          style={{
+            fontSize: 18, color: '#888', lineHeight: 1.65,
+            maxWidth: 480, marginBottom: 44, fontWeight: 400,
+          }}
+        >
           Debugr connects elite security researchers with companies that 
           take vulnerability reports seriously. Transparent payouts, 
           fast response, real results.
         </motion.p>
 
         {/* CTAs */}
-        <motion.div {...fade(0.4)} style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+        <motion.div 
+          variants={fadeInUp(0.4)} 
+          initial="hidden" 
+          animate="visible" 
+          style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}
+        >
           <Link href="/dashboard" style={{
             fontSize: 14, fontWeight: 600, color: '#111', background: '#f0f0f0',
             padding: '11px 22px', borderRadius: 8, textDecoration: 'none',
@@ -127,7 +136,12 @@ export default function Home() {
         </motion.div>
 
         {/* Divider + recent activity strip */}
-        <motion.div {...fade(0.55)} style={{ marginTop: 72, paddingTop: 28, borderTop: '1px solid #272727' }}>
+        <motion.div 
+          variants={fadeInUp(0.55)} 
+          initial="hidden" 
+          animate="visible" 
+          style={{ marginTop: 72, paddingTop: 28, borderTop: '1px solid #272727' }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
             <span style={{ fontFamily: 'DM Mono', fontSize: 11, color: '#444' }}>RECENTLY PAID</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -153,10 +167,17 @@ export default function Home() {
       <section style={{ borderTop: '1px solid #272727', borderBottom: '1px solid #272727' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
           {numbers.map((item, i) => (
-            <motion.div key={item.n} {...inView(i * 0.07)} style={{
-              padding: '40px 0', borderRight: i < 3 ? '1px solid #272727' : 'none',
-              paddingLeft: i === 0 ? 0 : 40,
-            }}>
+            <motion.div 
+              key={item.n} 
+              variants={inView(i * 0.07)} 
+              initial="hidden" 
+              whileInView="visible" 
+              viewport={viewportConfig} 
+              style={{
+                padding: '40px 0', borderRight: i < 3 ? '1px solid #272727' : 'none',
+                paddingLeft: i === 0 ? 0 : 40,
+              }}
+            >
               <p style={{ fontWeight: 800, fontSize: 36, letterSpacing: '-0.03em', color: '#f0f0f0', marginBottom: 6 }}>
                 {item.n}
               </p>
@@ -168,7 +189,13 @@ export default function Home() {
 
       {/* ════════════ HOW IT WORKS ════════════ */}
       <section style={{ maxWidth: 1200, margin: '0 auto', padding: '100px 24px' }}>
-        <motion.div {...inView()} style={{ marginBottom: 60 }}>
+        <motion.div 
+          variants={inView()} 
+          initial="hidden" 
+          whileInView="visible" 
+          viewport={viewportConfig} 
+          style={{ marginBottom: 60 }}
+        >
           <p style={{ fontFamily: 'DM Mono', fontSize: 12, color: '#e5334b', letterSpacing: '0.05em', marginBottom: 16 }}>
             How it works
           </p>
@@ -179,13 +206,18 @@ export default function Home() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 2 }}>
           {steps.map((s, i) => (
-            <motion.div key={s.n} {...inView(i * 0.08)} style={{
-              padding: '40px 40px',
-              background: '#171717',
-              border: '1px solid #272727',
-              marginRight: i % 2 === 0 ? 0 : 0,
-              transition: 'background 0.2s',
-            }}
+            <motion.div 
+              key={s.n} 
+              variants={inView(i * 0.08)} 
+              initial="hidden" 
+              whileInView="visible" 
+              viewport={viewportConfig} 
+              style={{
+                padding: '40px 40px',
+                background: '#171717',
+                border: '1px solid #272727',
+                transition: 'background 0.2s',
+              }}
               onMouseEnter={e => ((e.currentTarget as HTMLDivElement).style.background = '#1e1e1e')}
               onMouseLeave={e => ((e.currentTarget as HTMLDivElement).style.background = '#171717')}
             >
@@ -201,7 +233,12 @@ export default function Home() {
       <section style={{ borderTop: '1px solid #272727' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '100px 24px' }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 40, flexWrap: 'wrap', gap: 16 }}>
-            <motion.div {...inView()}>
+            <motion.div 
+              variants={inView()} 
+              initial="hidden" 
+              whileInView="visible" 
+              viewport={viewportConfig}
+            >
               <p style={{ fontFamily: 'DM Mono', fontSize: 12, color: '#e5334b', letterSpacing: '0.05em', marginBottom: 16 }}>Active programs</p>
               <h2 style={{ fontWeight: 800, fontSize: 'clamp(28px,3.5vw,42px)', letterSpacing: '-0.03em' }}>Current bounties</h2>
             </motion.div>
@@ -220,11 +257,17 @@ export default function Home() {
               ))}
             </div>
             {programs.map((p, i) => (
-              <motion.div key={p.name} {...inView(i * 0.06)} style={{
-                display: 'grid', gridTemplateColumns: '2fr 80px 2fr 1fr 80px', gap: 16,
-                padding: '16px 20px', borderBottom: i < programs.length - 1 ? '1px solid #1e1e1e' : 'none',
-                alignItems: 'center', cursor: 'pointer', transition: 'background 0.15s',
-              }}
+              <motion.div 
+                key={p.name} 
+                variants={inView(i * 0.06)} 
+                initial="hidden" 
+                whileInView="visible" 
+                viewport={viewportConfig} 
+                style={{
+                  display: 'grid', gridTemplateColumns: '2fr 80px 2fr 1fr 80px', gap: 16,
+                  padding: '16px 20px', borderBottom: i < programs.length - 1 ? '1px solid #1e1e1e' : 'none',
+                  alignItems: 'center', cursor: 'pointer', transition: 'background 0.15s',
+                }}
                 onMouseEnter={e => ((e.currentTarget as HTMLDivElement).style.background = '#171717')}
                 onMouseLeave={e => ((e.currentTarget as HTMLDivElement).style.background = 'transparent')}
               >
@@ -245,7 +288,13 @@ export default function Home() {
       {/* ════════════ CTA ════════════ */}
       <section style={{ borderTop: '1px solid #272727' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '100px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 40 }}>
-          <motion.div {...inView()} style={{ maxWidth: 560 }}>
+          <motion.div 
+            variants={inView()} 
+            initial="hidden" 
+            whileInView="visible" 
+            viewport={viewportConfig} 
+            style={{ maxWidth: 560 }}
+          >
             <h2 style={{ fontWeight: 800, fontSize: 'clamp(32px,4vw,52px)', letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: 16 }}>
               Ready to find what others miss?
             </h2>
@@ -254,7 +303,12 @@ export default function Home() {
               If you&apos;re serious about security research, you belong here.
             </p>
           </motion.div>
-          <motion.div {...inView(0.1)}>
+          <motion.div 
+            variants={inView(0.1)} 
+            initial="hidden" 
+            whileInView="visible" 
+            viewport={viewportConfig}
+          >
             <Link href="/dashboard" style={{
               display: 'block', fontSize: 14, fontWeight: 600,
               color: '#111', background: '#f0f0f0', padding: '14px 28px',

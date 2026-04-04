@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Link from 'next/link';
 import { fetchWithAuth, API_ENDPOINTS } from '@/lib/api';
+import { inView } from '@/lib/animations';
 
 type Severity = 'Critical' | 'High' | 'Medium' | 'Low';
 type Status = 'Triaged' | 'Resolved' | 'Pending' | 'Bounty Paid';
@@ -42,11 +43,7 @@ const statConfig: Record<Status, { text: string; bg: string }> = {
   Pending:       { text: '#cc8800', bg: 'rgba(204,136,0,0.1)' },
 };
 
-const inView = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-});
+
 
 export default function Dashboard() {
   const [reports, setReports] = useState<Report[]>([]);
@@ -169,12 +166,17 @@ export default function Dashboard() {
                 const st = statConfig[r.status] || { text: '#ccc', bg: '#1e1e1e' };
                 const sv = sevColor[r.severity] || { text: '#888' };
                 return (
-                  <motion.div key={r.id} {...inView(0)} style={{
-                    display: 'grid', gridTemplateColumns: '110px 1fr 130px 70px 130px 90px',
-                    padding: '16px 20px', gap: 16, alignItems: 'center',
-                    borderBottom: i < filtered.length - 1 ? '1px solid #1a1a1a' : 'none',
-                    cursor: 'pointer', transition: 'background 0.15s',
-                  }}
+                  <motion.div 
+                    key={r.id} 
+                    variants={inView(0)} 
+                    initial="hidden" 
+                    animate="visible" 
+                    style={{
+                      display: 'grid', gridTemplateColumns: '110px 1fr 130px 70px 130px 90px',
+                      padding: '16px 20px', gap: 16, alignItems: 'center',
+                      borderBottom: i < filtered.length - 1 ? '1px solid #1a1a1a' : 'none',
+                      cursor: 'pointer', transition: 'background 0.15s',
+                    }}
                     whileHover={{ backgroundColor: '#171717' }}
                   >
                     <span style={{ fontFamily: 'DM Mono', fontSize: 11, color: '#444' }}>{r.id === 'MOCK' ? '----' : r.id}</span>
